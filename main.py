@@ -11,8 +11,11 @@ strategy = {
 
 
 def main():
-    fasta_filepath = input("Enter path to fasta file containing parts to clone together, in order: ")
-    fasta_data = fasta_parser(fasta_filepath)
+    fasta_filepath = input("Enter path to fasta file containing parts to clone together, in order, otherwise type test to use the test data: ")
+    if fasta_filepath == "test":
+        fasta_data = fasta_parser('test_data/test.fasta')
+    else:
+        fasta_data = fasta_parser(fasta_filepath)
 
 
     primer_list = primer_designer(fasta_data)
