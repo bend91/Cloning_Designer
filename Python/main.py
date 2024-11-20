@@ -1,4 +1,5 @@
-from functions import *
+from . import functions as fn
+import os
 
 
 strategy_list = [
@@ -6,24 +7,24 @@ strategy_list = [
 ]
 
 strategy = {
-    "HiFi": design_hifi_primers,
+    "HiFi": fn.design_hifi_primers,
 }
 
 
 def main():
     fasta_filepath = input("Enter path to fasta file containing parts to clone together, in order, otherwise type test to use the test data: ")
     if fasta_filepath == "test":
-        fasta_data = fasta_parser('test_data/test.fasta')
+        fasta_data = fn.fasta_parser(f"{os.path.dirname(__file__)}/test_data/test.fasta")
     else:
-        fasta_data = fasta_parser(fasta_filepath)
+        fasta_data = fn.fasta_parser(fasta_filepath)
 
 
-    primer_list = primer_designer(fasta_data)
+    primer_list = fn.primer_designer(fasta_data)
     if input("Define a custom annealing temperature? If no then annealing temperature will be based on the least variation between primer sequences\n (Y/N): ") in "Yesyes":
-        opt_tm = float("Enter annealing temperature to aim for: ")
+        opt_tm = float(input("Enter annealing temperature to aim for: "))
     else:
         opt_tm = None
-    opt_primers = identify_optimal_annealing_temp(primer_list, opt_tm)
+    opt_primers = fn.identify_optimal_annealing_temp(primer_list, opt_tm)
     print("Enter the strategy you would like to use for cloning: \n")
     [print(f"[{i}] {x}\n") for i, x in enumerate(strategy_list)]
     chosen_strategy = strategy_list[int(input("> "))]
@@ -36,7 +37,7 @@ def main():
             save_file_dir = save_file_dir + "/"
         save_file = save_file_dir + save_file_name
     else:
-        save_file = "cloning_plan.txt"
+        save_file = f"{os.path.dirname(__file__)}/cloning_plan.txt"
 
     with open(save_file, "w") as f:
         for i, data in enumerate(fasta_data):
